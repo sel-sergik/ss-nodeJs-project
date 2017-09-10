@@ -1,0 +1,18 @@
+{
+  "name": "nodejs-project",
+  "version": "1.0.0",
+  "description": "Project for Node.js Global Mentoring program",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Siarhei <siarhei_seliukou@epam.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0"
+  }
+}
