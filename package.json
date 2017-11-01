@@ -4,7 +4,7 @@
   "description": "Project for Node.js Global Mentoring program",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Siarhei <siarhei_seliukou@epam.com>",
@@ -21,5 +21,9 @@
     "request": "^2.83.0",
     "split": "^1.0.1",
     "through2": "^2.0.3"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "lodash": "^4.17.4"
   }
 }

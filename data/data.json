@@ -1,0 +1,70 @@
+[
+	{
+		"products": [
+			{
+				"id": 1,
+				"name": "Product 1",
+				"reviews": [
+					{
+						"id": 1,
+						"description": "review 1"
+					},
+					{
+						"id": 2,
+						"description": "review 2"
+					}
+				]
+			},
+			{
+				"id": 2,
+				"name": "Product 2",
+				"reviews": [
+					{
+						"id": 3,
+						"description": "review 3"
+					}
+				]
+			},
+			{
+				"id": 3,
+				"name": "Product 3",
+				"reviews": [
+					{
+						"id": 4,
+						"description": "review 4"
+					},
+					{
+						"id": 5,
+						"description": "review 5"
+					},
+					{
+						"id": 6,
+						"description": "review 6"
+					}
+				]
+			}
+		],
+		"users": [
+			{
+				"id": 1,
+				"firstname": "Siarhei",
+				"lastname": "Seliukou"
+			},
+			{
+				"id": 2,
+				"firstname": "Kiryl",
+				"lastname": "Hatalski"
+			},
+			{
+				"id": 3,
+				"firstname": "Kiryl",
+				"lastname": "Katsuba"
+			},
+			{
+				"id": 4,
+				"firstname": "Maksim",
+				"lastname": "Shenets"
+			}
+		]
+	}
+]
