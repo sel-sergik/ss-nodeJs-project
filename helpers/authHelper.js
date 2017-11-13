@@ -26,6 +26,9 @@ exports.initPassportAuth = (app, router, usedData) => {
 	const passport = require('passport');
 	const LocalStrategy = require('passport-local');
 	const BearerStrategy = require('passport-http-bearer').Strategy;
+	const FacebookStrategy = require('passport-facebook').Strategy;
+	const TwitterStrategy = require('passport-twitter').Strategy;
+	const GoogleOAuth2Strategy = require('passport-google-auth').Strategy;
 
 	passport.use(new LocalStrategy({
 		usernameField: 'firstname',
@@ -54,13 +57,64 @@ exports.initPassportAuth = (app, router, usedData) => {
 		}
 	));
 
+	passport.use(new FacebookStrategy({
+	    clientID: 'FACEBOOK_APP_ID',
+	    clientSecret: 'FACEBOOK_APP_SECRET',
+	    callbackURL: "http://localhost:8080/auth/facebook/callback"
+	  },
+	  (accessToken, refreshToken, profile, cb) => {
+	    User.findOrCreate({ facebookId: profile.id }, (err, user) => {
+	      return cb(err, user);
+	    });
+	  }
+	));
+
+	passport.use(new TwitterStrategy({
+	    consumerKey: 'TWITTER_CONSUMER_KEY',
+	    consumerSecret: 'TWITTER_CONSUMER_SECRET',
+	    callbackURL: "http://127.0.0.1:8080/auth/twitter/callback"
+	  },
+	  (token, tokenSecret, profile, cb) => {
+	    User.findOrCreate({ twitterId: profile.id }, (err, user) => {
+	      return cb(err, user);
+	    });
+	  }
+	));
+
+	passport.use(new GoogleOAuth2Strategy({
+	    clientId: '123-456-789',
+	    clientSecret: 'shhh-its-a-secret',
+	    callbackURL: 'http://127.0.0.1:8080/auth/google/callback'
+	  },
+	  (accessToken, refreshToken, profile, cb) => {
+	    User.findOrCreate({ googleId: profile.id }, (err, user) => {
+	      cb(err, user);
+	    });
+	  }
+	));
+
 	app.use(passport.initialize());
 
-	router.post('/', passport.authenticate('local', { session: false }), function (req, res) {
+	router.post('/', passport.authenticate('local', { session: false }), (req, res) => {
 		let { token } = _.find(usedData[0].users, { accountId: req.user.accountId });
 
 		res.json(token);
 	});
+
+	router.get('/facebook', passport.authenticate('facebook'), (req, res) => {
+    console.log('logined as facebook user');
+    res.redirect('/');
+  });
+
+  router.get('/twitter', passport.authenticate('twitter'), (req, res) => {
+  	console.log('logined as twitter user');
+    res.redirect('/');
+  });
+
+  router.get('/google', passport.authenticate('google'), (req, res) => {
+    console.log('logined as google user');
+    res.redirect('/');
+  });
 
 	app.use('/auth', router);
 };
