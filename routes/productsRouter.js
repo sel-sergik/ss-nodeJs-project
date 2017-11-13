@@ -1,35 +1,43 @@
+'use strict';
+
 const express = require('express');
 const app = require('../app');
 const router = express.Router();
-var _ = require('lodash');
-const fs = require('fs');
+const _ = require('lodash');
+const passport = require('passport');
+const checkToken = require('./../middlewares/checkToken');
 
 app.use(express.json());
 
-const usedData = JSON.parse(fs.readFileSync('./data/data.json').toString())[0];
+const usedData = require('./../data/data.json');
+let authMiddleware = '';
 
-router.param('id', (req, res, next, id) => {
-	req.product = _.find(usedData.products, (curProduct) => { return curProduct.id == id });
-	next();
-});
+module.exports = function(opts) {
+	authMiddleware = (opts.authentication && opts.authentication == 'jwt') ? checkToken : passport.authenticate('bearer', { session: false });
 
-router.get('/', (req, res) => {
-	res.json(usedData.products)
-});
+	router.param('id', (req, res, next, id) => {
+		req.product = _.find(usedData[0].products, (curProduct) => { return curProduct.id == id });
+		next();
+	});
 
-router.post('/', (req, res) => {
-	let product = req.body;
-	usedData.products.push(product);
-	res.status(201).send(usedData.products);
-});
+	router.get('/', authMiddleware, (req, res) => {
+		res.json(usedData[0].products)
+	});
 
-router.get('/:id', (req, res) => {
-	res.json(req.product)
-});
+	router.post('/', authMiddleware, (req, res) => {
+		let product = req.body;
+		usedData[0].products.push(product);
+		res.status(201).send(usedData[0].products);
+	});
 
-router.get('/:id/reviews', (req, res) => {
-	console.log('find product route');
-	res.json(req.product.reviews)
-});
+	router.get('/:id', authMiddleware, (req, res) => {
+		res.json(req.product)
+	});
 
-app.use('/products', router);
+	router.get('/:id/reviews', authMiddleware, (req, res) => {
+		console.log('find product route');
+		res.json(req.product.reviews)
+	});
+
+	app.use('/products', router);
+}

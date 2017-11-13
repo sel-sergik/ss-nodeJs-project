@@ -1,12 +1,20 @@
+'use strict';
+
 const express = require('express');
 const app = require('../app');
 const router = express.Router();
-const fs = require('fs');
+const passport = require('passport');
+const checkToken = require('./../middlewares/checkToken');
 
-const usedData = JSON.parse(fs.readFileSync('./data/data.json').toString())[0];
+const usedData = require('./../data/data.json');
+let authMiddleware = '';
 
-router.get('/', (req, res) => {
-	res.json(usedData.users)
-});
+module.exports = function(opts) {
+	authMiddleware = (opts.authentication && opts.authentication == 'jwt') ? checkToken : passport.authenticate('bearer', { session: false });
 
-app.use('/users', router);
+	router.get('/', authMiddleware, (req, res) => {
+		res.json(usedData.users)
+	});
+
+	app.use('/users', router);
+}

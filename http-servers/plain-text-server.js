@@ -1,3 +1,5 @@
+'use strict';
+
 require('http')
 	.createServer()
 	.on('request', (req,res) => {

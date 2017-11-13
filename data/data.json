@@ -48,22 +48,42 @@
 			{
 				"id": 1,
 				"firstname": "Siarhei",
-				"lastname": "Seliukou"
+				"lastname": "Seliukou",
+				"email": "Siarhei_Seliukou@sdgsg.com",
+				"password": "1234",
+				"isActive": true,
+				"accountId": "7gEmIJWpWWRvNyjHBPkzsjiQCXFDjY9n",
+				"token": "TOKEN-56l1-4baf-b942-54p8d9cd0635"
 			},
 			{
 				"id": 2,
 				"firstname": "Kiryl",
-				"lastname": "Hatalski"
+				"lastname": "Hatalski",
+				"email": "Kiryl_Hatalski@sdgsg.com",
+				"password": "2341",
+				"isActive": true,
+				"accountId": "FuLsMcLdEQ8IEyUGhNU5MZOx3ISRMaD6",
+				"token": "TOKEN-5t87-4baf-b45a-f984d9cd0635"
 			},
 			{
 				"id": 3,
 				"firstname": "Kiryl",
-				"lastname": "Katsuba"
+				"lastname": "Katsuba",
+				"email": "Kiryl_Katsuba@sdgsg.com",
+				"password": "3412",
+				"isActive": true,
+				"accountId": "y6i8y4WOBYV7kspoTYoktTfe7aEU7a0j",
+				"token": "TOKEN-8v7r-4baf-b942-fdd219cd0635"
 			},
 			{
 				"id": 4,
 				"firstname": "Maksim",
-				"lastname": "Shenets"
+				"lastname": "Shenets",
+				"email": "Maksim_Shenets@sdgsg.com",
+				"password": "4123",
+				"isActive": false,
+				"accountId": "KHm4b7yIcBqfh4NAnKgaT2ZCZbaRlrxn",
+				"token": "TOKEN-6e87-12af-b954-f984df450635"
 			}
 		]
 	}
