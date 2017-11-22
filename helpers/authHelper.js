@@ -1,28 +1,29 @@
 'use strict';
 
-const _ = require('lodash');
+const models = require('../models/index');
 
-exports.initJwtAuth = (app, router, usedData) => {
+exports.initJwtAuth = (app, router) => {
 	const jwt = require('jsonwebtoken');
 
 	router.post('/', (req, res) => {
 		const user = req.body;
 
-		let curUser = _.find(usedData[0].users, { firstname: user.firstname });
+		models.User.findOne({ where: { firstname: user.firstname} }).then(curUser => {
 
-		if (curUser === undefined || curUser.password !== user.password) {
-			res.status(404).send({ code: 404,  message: 'Not Found', data: "You entered an invalid login/password. Please try again." });
-		} else {
-			let payload = { "user_id": curUser.accountId, "isActive": curUser.isActive };
-			let token = jwt.sign(payload, 'secretWord', { expiresIn: 30 });
-			res.send({code: 200, message: "OK", data: { user: { email: curUser.email, username: curUser.firstname } }, token: token});
-		}
+			if (curUser === undefined || curUser.password !== user.password) {
+				res.status(404).send({ code: 404,  message: 'Not Found', data: "You entered an invalid login/password. Please try again." });
+			} else {
+				let payload = { "user_id": curUser.accountId, "isActive": curUser.isActive };
+				let token = jwt.sign(payload, 'secretWord', { expiresIn: 30 });
+				res.send({code: 200, message: "OK", data: { user: { email: curUser.email, username: curUser.firstname } }, token: token});
+			}
+		});
 	});
 
 	app.use('/auth', router);
 };
 
-exports.initPassportAuth = (app, router, usedData) => {
+exports.initPassportAuth = (app, router) => {
 	const passport = require('passport');
 	const LocalStrategy = require('passport-local');
 	const BearerStrategy = require('passport-http-bearer').Strategy;
@@ -35,25 +36,24 @@ exports.initPassportAuth = (app, router, usedData) => {
 		passwordField: 'password',
 		session: false
 	}, function (username, password, done) {
-		let curUser = _.find(usedData[0].users, { firstname: username });
-
-		if (curUser === undefined || curUser.password !== password) {
-			done(null, false, 'Bad username/password combination');
-		} else {
-			done(null, curUser);
-		}
-		}
-	));
+		models.User.findOne({ where: { firstname: username} }).then(curUser => {
+			if (curUser === undefined || curUser === null || curUser.password !== password) {
+				done(null, false, 'Bad username/password combination');
+			} else {
+				done(null, curUser);
+			}
+		});
+	}));
 
 	passport.use(new BearerStrategy(
 		function (token, done) {
-			let result = _.find(usedData[0].users, { token: token });
-
-			if (result === undefined) {
-				done(null, false);
-			} else {
-				done(null, result, { scope: 'all' })
-			}
+			models.User.findOne({ where: { token: token } }).then(result => {
+				if (result === undefined || result === null) {
+					done(null, false);
+				} else {
+					done(null, result, { scope: 'all' })
+				}
+			});
 		}
 	));
 
@@ -96,9 +96,7 @@ exports.initPassportAuth = (app, router, usedData) => {
 	app.use(passport.initialize());
 
 	router.post('/', passport.authenticate('local', { session: false }), (req, res) => {
-		let { token } = _.find(usedData[0].users, { accountId: req.user.accountId });
-
-		res.json(token);
+		models.User.findOne({ where: { accountId: req.user.accountId } }).then(curToken => res.json(curToken));
 	});
 
 	router.get('/facebook', passport.authenticate('facebook'), (req, res) => {

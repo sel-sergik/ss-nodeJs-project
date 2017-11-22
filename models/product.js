@@ -1,9 +1,13 @@
 'use strict';
-
-class Product {
-	constructor () {
-		console.log('Product module');
-	}
-}
-
-module.exports = Product;
+module.exports = (sequelize, DataTypes) => {
+  var Product = sequelize.define('Product', {
+    name: DataTypes.STRING
+  }, {
+    classMethods: {
+      associate: function(models) {
+        Product.hasMany(models.Review);
+      }
+    }
+  });
+  return Product;
+};

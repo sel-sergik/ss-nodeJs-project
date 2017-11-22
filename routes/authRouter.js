@@ -7,12 +7,10 @@ const authHelper = require('./../helpers/authHelper');
 
 app.use(express.json());
 
-const usedData = require('./../data/data.json');
-
 module.exports = function(opts) {
 	if (opts.authentication && opts.authentication == 'jwt') {
-		authHelper.initJwtAuth(app, router, usedData);
+		authHelper.initJwtAuth(app, router);
 	} else {
-		authHelper.initPassportAuth(app, router, usedData);
+		authHelper.initPassportAuth(app, router);
 	}
 }
