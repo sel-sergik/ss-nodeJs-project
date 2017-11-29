@@ -2,31 +2,23 @@
 
 const parseArg = require('minimist');
 const app = require('./app');
-const Pg = require('pg').Client;
-const Sequelize = require('sequelize');
-const conString = 'postgres://postgres:admin@localhost:5432/nodejs';
-const sequelize = new Sequelize(conString);
-const productHelper = require('./helpers/productHelper');
+const mongoose = require('mongoose');
+const url = 'mongodb://localhost:27017/nodejs';
+const cityHelper = require('./helpers/mongoHelper');
+
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`App listening on port ${port}!`));
-
-//require('./middlewares/cookieParsing');
-//require('./middlewares/queryParsing');
 
 app.get('/', (req, res) => {
 	res.json({ok: true});
 });
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-    productHelper.importData();
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+mongoose.connect(url, function(err) {
+  if (err) throw err;
+  console.log("Connected correctly to server");
+  cityHelper.importData(mongoose);
+});
 
 const clArguments = parseArg(process.argv.slice(2), {});
 let auth = '';
@@ -42,4 +34,5 @@ if (clArguments.authentication && clArguments.authentication == 'jwt') {
 require('./routes/authRouter')({authentication: auth});
 require('./routes/productsRouter')({authentication: auth});
 require('./routes/usersRouter')({authentication: auth});
+require('./routes/citiesRouter')({authentication: auth});
 

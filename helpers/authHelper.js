@@ -1,6 +1,6 @@
 'use strict';
 
-const models = require('../models/index');
+const models = require('../mongoModels/index');
 
 exports.initJwtAuth = (app, router) => {
 	const jwt = require('jsonwebtoken');
@@ -8,7 +8,7 @@ exports.initJwtAuth = (app, router) => {
 	router.post('/', (req, res) => {
 		const user = req.body;
 
-		models.User.findOne({ where: { firstname: user.firstname} }).then(curUser => {
+		models.User.findOne({ firstname: user.firstname} , (err, curUser) => {
 
 			if (curUser === undefined || curUser.password !== user.password) {
 				res.status(404).send({ code: 404,  message: 'Not Found', data: "You entered an invalid login/password. Please try again." });
@@ -36,7 +36,7 @@ exports.initPassportAuth = (app, router) => {
 		passwordField: 'password',
 		session: false
 	}, function (username, password, done) {
-		models.User.findOne({ where: { firstname: username} }).then(curUser => {
+		models.User.findOne({ firstname: username}, (err, curUser) => {
 			if (curUser === undefined || curUser === null || curUser.password !== password) {
 				done(null, false, 'Bad username/password combination');
 			} else {
@@ -47,7 +47,7 @@ exports.initPassportAuth = (app, router) => {
 
 	passport.use(new BearerStrategy(
 		function (token, done) {
-			models.User.findOne({ where: { token: token } }).then(result => {
+			models.User.findOne({ token: token }, (err, result) => {
 				if (result === undefined || result === null) {
 					done(null, false);
 				} else {
@@ -96,7 +96,7 @@ exports.initPassportAuth = (app, router) => {
 	app.use(passport.initialize());
 
 	router.post('/', passport.authenticate('local', { session: false }), (req, res) => {
-		models.User.findOne({ where: { accountId: req.user.accountId } }).then(curToken => res.json(curToken));
+		models.User.findOne({ accountId: req.user.accountId }, (err, curToken) => res.json(curToken));
 	});
 
 	router.get('/facebook', passport.authenticate('facebook'), (req, res) => {
