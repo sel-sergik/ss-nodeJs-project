@@ -1,0 +1,411 @@
+swagger: "2.0"
+info:
+  description: "This is API for NodeJs Mentoring program"
+  version: "1.0.0"
+  title: "Simple Inventory API"
+  contact:
+    email: "siarhei_seliukou@epam.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: localhost:10010
+basePath: /
+tags:
+- name: "products"
+  description: "Operations available to products"
+- name: "users"
+  description: "Operations available to users"
+- name: "cities"
+  description: "Operations available to cities"
+schemes:
+- "https"
+paths:
+  /products:
+    x-swagger-router-controller: product_controller
+    get:
+      tags:
+      - "products"
+      summary: "searches products"
+      description: "Returns the list of products"
+      operationId: "searchProducts"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ProductItem"
+        500:
+          description: "Internal Server Error"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+      - "products"
+      summary: "adds an product item"
+      description: "Adds an product to the system"
+      operationId: "addProduct"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "productItem"
+        description: "Product item to add"
+        required: false
+        schema:
+          $ref: "#/definitions/ProductItem"
+      responses:
+        201:
+          description: "item created"
+        400:
+          description: "invalid input, object invalid"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products/{productId}:
+    x-swagger-router-controller: product_controller
+    get:
+      tags:
+      - "products"
+      summary: "Find product by ID"
+      description: "Returns a single product"
+      operationId: "getProductById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "id of specific product"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ProductItem"
+        400:
+          description: "bad input parameter"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      tags:
+      - "products"
+      summary: "Delete a product"
+      operationId: "deleteProduct"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "Product id to delete"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Product successfully deleted"
+        404:
+          description: "Product not found"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products/{productId}/reviews:
+    x-swagger-router-controller: product_controller
+    get:
+      tags:
+      - "products"
+      summary: "Find reviews by product ID"
+      description: "Returns reviews for a single product"
+      operationId: "getReviewsByProductId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "id of specific product"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            example:
+            - id: 1
+              description: "review 1"
+              _id: "5a2e86fba9b9f1185868a8a1"
+            - id: 2
+              description: "review 2"
+              _id: "5a2e86fba9b9f1185868a8a0"
+            items:
+              type: "object"
+              properties: {}
+        400:
+          description: "bad input parameter"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users:
+    x-swagger-router-controller: user_controller
+    get:
+      tags:
+      - "users"
+      summary: "searches users"
+      description: "Returns the list of users"
+      operationId: "searchUsers"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserItem"
+        500:
+          description: "Internal Server Error"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /cities:
+    x-swagger-router-controller: city_controller
+    get:
+      tags:
+      - "cities"
+      summary: "searches cities"
+      description: "Returns the list of cities"
+      operationId: "searchCities"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CityItem"
+        500:
+          description: "Internal Server Error"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+      - "cities"
+      summary: "adds an city item"
+      description: "Adds an city to the system"
+      operationId: "addCity"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "cityItem"
+        description: "City item to add"
+        required: false
+        schema:
+          $ref: "#/definitions/CityItem"
+      responses:
+        201:
+          description: "item created"
+        500:
+          description: "Internal Server Error"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /cities/{cityId}:
+    x-swagger-router-controller: city_controller
+    put:
+      tags:
+      - "cities"
+      summary: "Updated city"
+      operationId: "updateCity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "cityId"
+        in: "path"
+        description: "id of product that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "cityItem"
+        description: "Updated city object"
+        required: true
+        schema:
+          $ref: "#/definitions/CityItem"
+      responses:
+        200:
+          description: "City successfully updated"
+        201:
+          description: "City successfully created"
+        500:
+          description: "Internal Server Error"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      tags:
+      - "cities"
+      summary: "Delete a city"
+      operationId: "deleteCity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "cityId"
+        in: "path"
+        description: "City id to delete"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "City successfully deleted"
+        404:
+          description: "City not found"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+definitions:
+  ProductItem:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      id:
+        type: "string"
+        example: "5a2e86fba9b9f1185868a8a2"
+      name:
+        type: "string"
+        example: "Product 1"
+      reviews:
+        type: "array"
+        example:
+        - id: 1
+          description: "review 1"
+          _id: "5a2e86fba9b9f1185868a8a1"
+        - id: 2
+          description: "review 2"
+          _id: "5a2e86fba9b9f1185868a8a0"
+        items:
+          type: "object"
+          properties: {}
+    example:
+      reviews:
+      - id: 1
+        description: "review 1"
+        _id: "5a2e86fba9b9f1185868a8a1"
+      - id: 2
+        description: "review 2"
+        _id: "5a2e86fba9b9f1185868a8a0"
+      name: "Product 1"
+      id: "5a2e86fba9b9f1185868a8a2"
+  UserItem:
+    type: "object"
+    required:
+    - "accountId"
+    - "email"
+    - "firstname"
+    - "isActive"
+    - "lastname"
+    - "password"
+    - "token"
+    properties:
+      id:
+        type: "string"
+        example: "5a2e86fba9b9f1185868a8a8"
+      firstname:
+        type: "string"
+        example: "Siarhei"
+      lastname:
+        type: "string"
+        example: "Seliukou"
+      email:
+        type: "string"
+        example: "Siarhei_Seliukou@sdgsg.com"
+      accountId:
+        type: "string"
+        example: "7gEmIJWpWWRvNyjHBPkzsjiQCXFDjY9n"
+      token:
+        type: "string"
+        example: "7gEmIJWpWWRvNyjHBPkzsjiQCXFDjY9n"
+      __v:
+        type: "integer"
+        format: "int32"
+      isActive:
+        type: "boolean"
+        default: false
+      password:
+        type: "string"
+        example: "1234"
+    example:
+      accountId: "7gEmIJWpWWRvNyjHBPkzsjiQCXFDjY9n"
+      firstname: "Siarhei"
+      password: "1234"
+      __v: 0
+      id: "5a2e86fba9b9f1185868a8a8"
+      isActive: false
+      email: "Siarhei_Seliukou@sdgsg.com"
+      lastname: "Seliukou"
+      token: "7gEmIJWpWWRvNyjHBPkzsjiQCXFDjY9n"
+  CityItem:
+    type: "object"
+    required:
+    - "country"
+    - "location"
+    - "name"
+    properties:
+      id:
+        type: "string"
+        example: "5a2e86efd348063fffe79b72"
+      name:
+        type: "string"
+        example: "Brest"
+      country:
+        type: "string"
+        example: "Belarus"
+      capital:
+        type: "boolean"
+        default: false
+      location:
+        type: "object"
+        example:
+          lat: 52.0976
+          long: 23.7341
+        properties: {}
+    example:
+      country: "Belarus"
+      capital: false
+      name: "Brest"
+      location:
+        lat: 52.0976
+        long: 23.7341
+      id: "5a2e86efd348063fffe79b72"
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
