@@ -16,8 +16,8 @@ module.exports = function(opts) {
 
 	router.param('id', (req, res, next, id) => {
 		models.City.findById(id, (err, city) => {
-			if (err) {
-				res.status(500).send(err);
+			if (err || !city) {
+				res.status(404).send(err);
 			} else {
 				req.city = city;
 				next();

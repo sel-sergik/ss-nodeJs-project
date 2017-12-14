@@ -16,8 +16,12 @@ module.exports = function(opts) {
 
 	router.param('id', (req, res, next, id) => {
 		models.Product.findById(id, (err, product) => {
-			req.product = product;
-			next();
+			if (err || !product) {
+				res.status(404).send({message: "Product Not Found"});
+			} else {
+				req.product = product;
+				next();
+			}
 		});
 	});
 
@@ -38,7 +42,7 @@ module.exports = function(opts) {
 
 	router.delete('/:id', authMiddleware, (req, res) => {
 		models.Product.findByIdAndRemove(req.product._id, (err, product) => {
-				res.status(200).send({ message: "product successfully deleted", id: product._id });
+			res.status(200).send({ message: "product successfully deleted", id: product._id });
 		});
 	});
 
